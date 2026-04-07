@@ -10,7 +10,7 @@ ARG TARGETARCH
 
 # Install skopeo for Push/Pull of container images to integrate with Model Registry py client and Olot.
 RUN . /cachi2/cachi2.env && \
-     microdnf install -y skopeo gcc make python3.12-devel cargo g++ && \
+     microdnf install -y skopeo gcc make python3.12-devel cargo g++ libffi-devel openssl-devel perl && \
     if [ "$TARGETARCH" = "ppc64le" ] || [ "$TARGETARCH" = "s390x" ]; then \
       microdnf install -y openssl-devel perl; \
     fi && \
@@ -24,6 +24,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 COPY ./poetry.lock ./pyproject.toml ./requirements.txt ./
+
+RUN tar -xzf /cachi2/output/deps/pip/sigstore_models-0.0.6.tar.gz -C /tmp \
+    && cd /tmp/sigstore_models-0.0.6 \
+    && sed -i '/^\[build-system\]$/,/^build-backend = "uv_build"$/d' /tmp/sigstore_models-0.0.6/pyproject.toml \
+    && python -m pip install .
 
 # rfc3161-client has no pre-built wheels for ppc64le/s390x, so pip builds from
 # source via Rust/maturin. OPENSSL_NO_VENDOR tells openssl-sys to link against
