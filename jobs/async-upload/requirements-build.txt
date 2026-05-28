@@ -81,7 +81,6 @@ maturin==1.12.6
     #   pydantic-core
     #   rfc3161-client
     #   rpds-py
-    
 mypy-extensions==1.1.0
     # via mypy
 mypy==1.15.0
@@ -137,10 +136,8 @@ typing-extensions==4.15.0 ; python_version >= "3.11" and python_version < "4.0"
     # via
     #   mypy
     #   setuptools-scm
-# uv-build removed: sigstore-models installs from a pure-Python wheel so its
-# build backend is never invoked; keeping uv-build here breaks Cachi2 prefetch
-# because its sdist ships a stale Cargo.lock (cargo vendor --locked fails).
-   
+uv-build==0.9.30
+    # via sigstore-models
 wheel==0.46.3
     # via
     #   nest-asyncio2
